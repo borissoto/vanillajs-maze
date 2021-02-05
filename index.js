@@ -8,7 +8,7 @@ const {
   // Mouse,
 } = Matter;
 
-const cells = 3;
+const cells = 20;
 const width = 600;
 const height = 600;
 
@@ -127,7 +127,24 @@ horizontals.forEach((row, rowIndex) => {
       columnIndex * unitLength + unitLength / 2,
       rowIndex * unitLength + unitLength,
       unitLength,
-      10,
+      5,
+      {
+        isStatic: true,
+      }
+    );
+    World.add(world, wall);
+  });
+});
+verticals.forEach((row, rowIndex) => {
+  row.forEach((open, columnIndex) => {
+    if (open) {
+      return;
+    }
+    const wall = Bodies.rectangle(
+      columnIndex * unitLength + unitLength,
+      rowIndex * unitLength + unitLength / 2,
+      5,
+      unitLength,
       {
         isStatic: true,
       }
