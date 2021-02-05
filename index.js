@@ -4,17 +4,19 @@ const {
   Runner,
   World,
   Bodies,
+  Body,
   // MouseConstraint,
   // Mouse,
 } = Matter;
 
-const cells = 20;
+const cells = 15;
 const width = 600;
 const height = 600;
 
 const unitLength = width / cells;
 
 const engine = Engine.create();
+engine.world.gravity.y = 0;
 const { world } = engine;
 const render = Render.create({
   element: document.body,
@@ -29,10 +31,10 @@ Render.run(render);
 Runner.run(Runner.create(), engine);
 // Walls
 const walls = [
-  Bodies.rectangle(width / 2, 0, width, 40, { isStatic: true }),
-  Bodies.rectangle(width / 2, height, width, 40, { isStatic: true }),
-  Bodies.rectangle(0, height / 2, 40, height, { isStatic: true }),
-  Bodies.rectangle(width, height / 2, 40, height, { isStatic: true }),
+  Bodies.rectangle(width / 2, 0, width, 2, { isStatic: true }),
+  Bodies.rectangle(width / 2, height, width, 2, { isStatic: true }),
+  Bodies.rectangle(0, height / 2, 2, height, { isStatic: true }),
+  Bodies.rectangle(width, height / 2, 2, height, { isStatic: true }),
 ];
 
 World.add(world, walls);
@@ -135,6 +137,7 @@ horizontals.forEach((row, rowIndex) => {
     World.add(world, wall);
   });
 });
+
 verticals.forEach((row, rowIndex) => {
   row.forEach((open, columnIndex) => {
     if (open) {
@@ -151,6 +154,42 @@ verticals.forEach((row, rowIndex) => {
     );
     World.add(world, wall);
   });
+});
+
+// Goal
+const goal = Bodies.rectangle(
+  width - unitLength / 2,
+  height - unitLength / 2,
+  unitLength * 0.7,
+  unitLength * 0.7,
+  {
+    isStatic: true,
+  }
+);
+World.add(world, goal);
+
+// Ball
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength * 0.25);
+World.add(world, ball);
+
+document.addEventListener('keydown', (event) => {
+  const { x, y } = ball.velocity;
+  console.log(x, y);
+  if (event.keyCode == 87) {
+    Body.setVelocity(ball, { x, y: y - 5 });
+  }
+  if (event.keyCode == 68) {
+    Body.setVelocity(ball, { x: x + 5, y });
+    console.log('move ball right');
+  }
+  if (event.keyCode == 83) {
+    Body.setVelocity(ball, { x, y: y + 5 });
+    console.log('move ball down');
+  }
+  if (event.keyCode == 65) {
+    Body.setVelocity(ball, { x: x - 5, y });
+    console.log('move ball left');
+  }
 });
 
 // console.log(verticals);
